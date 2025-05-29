@@ -1,1 +1,2 @@
-#мне пох
+pyTelegramBotAPI
+requests
