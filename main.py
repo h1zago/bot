@@ -4,7 +4,7 @@ import requests
 import json
 import os
 
-BOT_TOKEN = '7802345049:AAFV_ooyKMMt5430VLph_5C012QiZO-3dMM'
+BOT_TOKEN = '7802345049:AAG9smadomRJfEwlNAlGXY7WoJiIuBpUUQg'
 TMDB_API_KEY = '2ab9e014e0c882d6ede7e2bcdda2c93f'
 
 bot = telebot.TeleBot(BOT_TOKEN)
