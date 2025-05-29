@@ -1,6 +1,7 @@
 import telebot
 from telebot import types
 import requests
+from flask import Flask, request
 import json
 import os
 
@@ -8,6 +9,8 @@ BOT_TOKEN = '7802345049:AAG9smadomRJfEwlNAlGXY7WoJiIuBpUUQg'
 TMDB_API_KEY = '2ab9e014e0c882d6ede7e2bcdda2c93f'
 
 bot = telebot.TeleBot(BOT_TOKEN)
+
+app = Flask(__name__)
 
 # Состояния
 user_state = {}  # user_id -> индекс текущего фильма в популярных
@@ -225,4 +228,26 @@ def callback(call):
         user_genre_state.pop(user_id, None)
         send_movie(call.message.chat.id, user_state.get(user_id, 0))
 
-bot.polling(none_stop=True)
+# Вебхук-путь для Telegram
+@app.route(f'/{BOT_TOKEN}', methods=['POST'])
+def telegram_webhook():
+    json_str = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_str)
+    bot.process_new_updates([update])
+    return '', 200
+
+# Ручной сетап вебхука
+@app.route('/set_webhook', methods=['GET'])
+def set_webhook():
+    webhook_url = os.environ.get("WEBHOOK_URL")  # Например, https://your-app.onrender.com
+    if not webhook_url:
+        return "WEBHOOK_URL not set", 400
+    full_url = f"{webhook_url}/{BOT_TOKEN}"
+    bot.remove_webhook()
+    success = bot.set_webhook(url=full_url)
+    return f"Webhook set: {success}", 200
+
+# Запуск сервера
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

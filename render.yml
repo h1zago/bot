@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: telegram-bot
+    env: python
+    buildCommand: ""
+    startCommand: python main.py
+    envVars:
+      - key: TELEGRAM_TOKEN
+        value: your-telegram-token
+      - key: TMDB_API_KEY
+        value: your-tmdb-api-key
+      - key: WEBHOOK_URL
+        value: https://your-app.onrender.com
